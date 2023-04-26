@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +16,8 @@ import java.util.Map;
 @SpringBootTest
 class FileAnalyzerApplicationTests {
     Map<String, Integer> result = new HashMap<>();
-    File zipPath = new File("C:\\Users\\79627\\Documents\\GitHub\\File-Analyzer-main\\src\\test\\resources\\logs-27_02_2018-03_03_2018.zip");
+    Path path = Paths.get("src/test/resources/logs-27_02_2018-03_03_2018.zip");
+    File zipPath = path.toFile();
 
     @Test
     public void testCountEntriesInZipFile() throws IOException {

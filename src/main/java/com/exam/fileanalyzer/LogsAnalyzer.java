@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -17,7 +18,7 @@ public class LogsAnalyzer {
     private static final String DATE = "yyyy-MM-dd";
     private static final String FILE_PATTERN_REGEX = "logs_\\d{4}-\\d{2}-\\d{2}-access\\.log";
     private static final String FIRST_ZERO = "^0+(?!$)";
-    private static final Path DIR_PATH = Path.of("C:\\Users\\79627\\Documents\\GitHub\\File-Analyzer-main\\src\\test\\resources\\tempDir");
+    private static final Path DIR_PATH = Paths.get("src/test/resources/logs-27_02_2018-03_03_2018.zip");
 
     public static Map<String, Integer> countEntriesInZipFile(
             String searchQuery, File zipFile, LocalDate startDate, Integer numberOfDays)
