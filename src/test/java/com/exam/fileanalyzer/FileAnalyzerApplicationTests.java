@@ -17,25 +17,25 @@ import java.util.Map;
 class FileAnalyzerApplicationTests {
     Map<String, Integer> result = new HashMap<>();
     Path path = Paths.get("src/test/resources/logs-27_02_2018-03_03_2018.zip");
-    File zipPath = path.toFile();
+    File file = path.toFile();
 
     @Test
     public void testCountEntriesInZipFile() throws IOException {
-        result = LogsAnalyzer.countEntriesInZipFile("Mozilla", zipPath, LocalDate.of(2018, 2, 27), 3);
+        result = LogsAnalyzer.countEntriesInZipFile("Mozilla", file, LocalDate.of(2018, 2, 27), 3);
         Map<String, Integer> expected = Map.of("logs_2018-02-27-access.log", 40, "logs_2018-02-28-access.log", 18, "logs_2018-03-01-access.log", 23);
         Assertions.assertEquals(expected, result);
     }
 
     @Test
     public void testCountEntriesInZipFileWhenNoMatchSearchQuery() throws IOException {
-        result = LogsAnalyzer.countEntriesInZipFile("abcdef11", zipPath, LocalDate.of(2018, 2, 27), 3);
+        result = LogsAnalyzer.countEntriesInZipFile("abcdef11", file, LocalDate.of(2018, 2, 27), 3);
         Map<String, Integer> expected = Map.of("logs_2018-02-27-access.log", 0, "logs_2018-02-28-access.log", 0, "logs_2018-03-01-access.log", 0);
         Assertions.assertEquals(expected, result);
     }
 
     @Test
     public void testCountEntriesInZipFileWhenFilesNotFound() throws IOException {
-        result = LogsAnalyzer.countEntriesInZipFile("Mozilla", zipPath, LocalDate.of(2020, 2, 27), 3);
+        result = LogsAnalyzer.countEntriesInZipFile("Mozilla", file, LocalDate.of(2020, 2, 27), 3);
         Assertions.assertTrue(result.isEmpty());
     }
 
@@ -54,15 +54,15 @@ class FileAnalyzerApplicationTests {
     @Test
     public void testCountEntriesInZipFileWithNull() throws IOException {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> LogsAnalyzer.countEntriesInZipFile("", zipPath, LocalDate.of(2018, 2, 27), 3));
+                () -> LogsAnalyzer.countEntriesInZipFile("", file, LocalDate.of(2018, 2, 27), 3));
 
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> LogsAnalyzer.countEntriesInZipFile("Mozilla", null, LocalDate.of(2018, 2, 27), 3));
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> LogsAnalyzer.countEntriesInZipFile("Mozilla", zipPath, null, 3));
+                () -> LogsAnalyzer.countEntriesInZipFile("Mozilla", file, null, 3));
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> LogsAnalyzer.countEntriesInZipFile("Mozilla", zipPath, LocalDate.of(2018, 2, 27), null));
+                () -> LogsAnalyzer.countEntriesInZipFile("Mozilla", file, LocalDate.of(2018, 2, 27), null));
     }
 }

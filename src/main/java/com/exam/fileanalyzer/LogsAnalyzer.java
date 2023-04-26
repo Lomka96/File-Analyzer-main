@@ -1,13 +1,13 @@
 package com.exam.fileanalyzer;
 
+import com.exam.fileanalyzer.util.DateUtils;
+import com.exam.fileanalyzer.util.FileUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,7 +17,6 @@ import java.util.zip.ZipFile;
 public class LogsAnalyzer {
     private static final String DATE = "yyyy-MM-dd";
     private static final String FILE_PATTERN_REGEX = "logs_\\d{4}-\\d{2}-\\d{2}-access\\.log";
-    private static final String FIRST_ZERO = "^0+(?!$)";
     private static final Path DIR_PATH = Paths.get("src/test/resources/logs-27_02_2018-03_03_2018.zip");
 
     public static Map<String, Integer> countEntriesInZipFile(
@@ -33,7 +32,7 @@ public class LogsAnalyzer {
                 String fileName = entry.getName();
                 if (validateFileName(fileName)) {
                     try {
-                        extractFilesFromZip(zip, DIR_PATH);
+                        FileUtils.extractFilesFromZip(zip, DIR_PATH);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -60,35 +59,6 @@ public class LogsAnalyzer {
     }
 
     public static boolean validateFileName(String fileName) {
-        if (!fileName.matches(FILE_PATTERN_REGEX)) {
-            return false;
-        }
-        int year = Integer.parseInt(fileName.substring(5, 9));
-        int month = Integer.parseInt(fileName.substring(10, 12).replaceFirst(FIRST_ZERO, ""));
-        int day = Integer.parseInt(fileName.substring(13, 15).replaceFirst(FIRST_ZERO, ""));
-        return isValidDate(year, month, day);
-    }
-
-    public static boolean isValidDate(int year, int month, int day) {
-        if (month < 1 || month > 12) {
-            return false;
-        }
-        return day >= 1 && day <= Month.of(month).length(Year.isLeap(year));
-    }
-
-    private static void extractFilesFromZip(ZipFile zip, Path tempDir) throws IOException {
-        zip.stream().forEach(entry -> {
-            Path outputFile = tempDir.resolve(entry.getName());
-            try (InputStream inputStream = zip.getInputStream(entry);
-                 FileOutputStream outputStream = new FileOutputStream(outputFile.toFile())) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        return DateUtils.validateFileName(fileName, FILE_PATTERN_REGEX);
     }
 }
