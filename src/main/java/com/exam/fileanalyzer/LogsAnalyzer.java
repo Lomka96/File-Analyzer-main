@@ -15,11 +15,10 @@ import java.util.zip.ZipFile;
 
 @Service
 public class LogsAnalyzer {
-    private static final String DATE = "yyyy-MM-dd";
-    private static final String FILE_PATTERN_REGEX = "logs_\\d{4}-\\d{2}-\\d{2}-access\\.log";
-    private static final Path DIR_PATH = Paths.get("src/test/resources/logs-27_02_2018-03_03_2018.zip");
+    private final String DATE = "yyyy-MM-dd";
+    private final Path DIR_PATH = Paths.get("src/test/resources/tempDir");
 
-    public static Map<String, Integer> countEntriesInZipFile(
+    public Map<String, Integer> countEntriesInZipFile(
             String searchQuery, File zipFile, LocalDate startDate, Integer numberOfDays)
             throws IOException {
         if (searchQuery.isBlank() || zipFile == null || startDate == null || numberOfDays == null || numberOfDays < 0) {
@@ -30,7 +29,7 @@ public class LogsAnalyzer {
         try (ZipFile zip = new ZipFile(zipFile)) {
             zip.stream().forEach(entry -> {
                 String fileName = entry.getName();
-                if (validateFileName(fileName)) {
+                if (DateUtils.validateFileName(fileName)) {
                     try {
                         FileUtils.extractFilesFromZip(zip, DIR_PATH);
                     } catch (IOException e) {
@@ -56,9 +55,5 @@ public class LogsAnalyzer {
             });
         }
         return result;
-    }
-
-    public static boolean validateFileName(String fileName) {
-        return DateUtils.validateFileName(fileName, FILE_PATTERN_REGEX);
     }
 }

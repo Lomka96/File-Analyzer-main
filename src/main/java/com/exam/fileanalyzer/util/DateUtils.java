@@ -6,9 +6,11 @@ import java.time.Year;
 public class DateUtils {
 
     private static final String FIRST_ZERO = "^0+(?!$)";
+    private static final String FILE_PATTERN_REGEX = "logs_\\d{4}-\\d{2}-\\d{2}-access\\.log";
 
-    public static boolean validateFileName(String fileName, String filePatternRegex) {
-        if (!fileName.matches(filePatternRegex)) {
+
+    public static boolean validateFileName(String fileName) {
+        if (!fileName.matches(FILE_PATTERN_REGEX)) {
             return false;
         }
         int year = Integer.parseInt(fileName.substring(5, 9));
