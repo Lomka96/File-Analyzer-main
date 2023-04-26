@@ -15,8 +15,8 @@ import java.util.zip.ZipFile;
 
 @Service
 public class LogsAnalyzer {
-    private final String DATE = "yyyy-MM-dd";
-    private final Path DIR_PATH = Paths.get("src/test/resources/tempDir");
+    private final String DATE_FORMAT = "yyyy-MM-dd";
+    private final Path LOGGING_DIRECTORY_PATH = Paths.get("src/test/resources/tempDir");
 
     public Map<String, Integer> countEntriesInZipFile(
             String searchQuery, File zipFile, LocalDate startDate, Integer numberOfDays)
@@ -31,12 +31,12 @@ public class LogsAnalyzer {
                 String fileName = entry.getName();
                 if (DateUtils.validateFileName(fileName)) {
                     try {
-                        FileUtils.extractFilesFromZip(zip, DIR_PATH);
+                        FileUtils.extractFilesFromZip(zip, LOGGING_DIRECTORY_PATH);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     String fileDateStr = fileName.substring(5, 15);
-                    LocalDate fileDate = LocalDate.parse(fileDateStr, DateTimeFormatter.ofPattern(DATE));
+                    LocalDate fileDate = LocalDate.parse(fileDateStr, DateTimeFormatter.ofPattern(DATE_FORMAT));
                     if (fileDate.isAfter(startDate.minusDays(1)) && fileDate.isBefore(endDate)) {
                         int count = 0;
                         try (BufferedReader br = new BufferedReader(new InputStreamReader(zip.getInputStream(entry)))) {
